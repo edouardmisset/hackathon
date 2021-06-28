@@ -3,5 +3,5 @@ const newEventRouter = require('./newEvents');
 
 module.exports = (app) => {
   app.use('/events', eventsRouter);
-  app.use('new-event', newEventRouter);
+  app.use('/new-event', newEventRouter);
 };

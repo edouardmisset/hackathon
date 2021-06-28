@@ -1,4 +1,4 @@
-// const eventRouter = require('express').Router();
+const eventRouter = require('express').Router();
 // const asyncHandler = require('express-async-handler');
 // const newEvent = require('../models/newEvent');
 
@@ -10,4 +10,4 @@
 //   })
 // );
 
-// module.exports = eventRouter;
+module.exports = eventRouter;

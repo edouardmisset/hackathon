@@ -4,9 +4,7 @@ const initRoutes = require('./routes');
 const handleRecordNotFoundError = require('./middlewares/handleRecordNotFoundError');
 const handleValidationError = require('./middlewares/handleValidationError');
 const handleServerInternalError = require('./middlewares/handleServerInternalError');
-const sessions = require('./middlewares/sessions');
 const cors = require('./middlewares/cors');
-const { initSockets } = require('./sockets');
 
 const app = express();
 
@@ -16,7 +14,6 @@ app.set('trust proxy', 1);
 app.use(express.json());
 
 app.use(cors);
-app.use(sessions);
 
 app.use('/file-storage', express.static('file-storage'));
 
@@ -32,8 +29,6 @@ const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   }
 });
-
-initSockets(server);
 
 // process setup : improves error reporting
 process.on('unhandledRejection', (error) => {

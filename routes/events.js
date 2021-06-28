@@ -6,7 +6,6 @@ eventsRouter.get(
   '/',
   asyncHandler(async (req, res) => {
     // const { titleOrContentContains, authorId } = req.query;
-
     res.send(await Event.findMany());
   })
 );
