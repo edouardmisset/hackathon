@@ -28,7 +28,7 @@ model event {
   online      Boolean
   date        DateTime                @default(now())
   duration    Int
-  image       String                  @db.VarChar(255)
+  image       String?                 @db.VarChar(255)
   location    String                  @db.VarChar(255)
   UserToEvent userRegisteredToEvent[]
   eventType   eventType[]
