@@ -8,75 +8,99 @@ datasource db {
 }
 
 model user {
-  id                     Int                     @id @default(autoincrement())
-  email                  String                  @unique @db.VarChar(255)
-  hashedPassword         String                  @db.VarChar(255)
-  role                   String                  @default("student") @db.VarChar(255)
-  firstName              String                  @db.VarChar(255)
-  lastName               String                  @db.VarChar(255)
-  meetUrl                String?                 @db.VarChar(255)
-  discordId              String?                 @db.VarChar(255)
-  avatarUrl              String?                 @db.VarChar(255)
-  resetPasswordToken     String?                 @db.VarChar(255)
-  notes                  note[]
-  createdAt              DateTime                @default(now())
-  updatedAt              DateTime                @default(now())
-  activityParticipations activityParticipation[]
+  id              Int               @id @default(autoincrement())
+  firstName       String            @db.VarChar(255)
+  lastName        String            @db.VarChar(255)
+  email           String            @unique @db.VarChar(255)
+  userRoleId      Int
+  hashedPassword  String            @db.VarChar(255)
+  role            UserRole          @relation(fields: [userRoleId], references: [id])
+  UserToEvent     UserToEvent[]
+  favorite        favorite[]
+  currentSkills   currentSkills[]
+  skillsToacquire skillsToacquire[]
+  currentUser     friend[]          @relation("currentUser")
+  friend          friend[]          @relation("friend")
 }
 
-model note {
-  id        Int      @id @default(autoincrement())
-  title     String   @db.VarChar(255)
-  content   String   @db.Text
-  authorId  Int?
-  author    user?    @relation(fields: [authorId], references: [id])
-  tags      tag[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+model event {
+  id          Int           @id @default(autoincrement())
+  name        String        @db.VarChar(255)
+  description String        @db.Text
+  online      Boolean
+  date        DateTime      @default(now())
+  duration    Int
+  image       String        @db.VarChar(255)
+  location    String        @db.VarChar(255)
+  UserToEvent UserToEvent[]
+  favorite    favorite[]
+  eventType   eventType[]
+}
 
-  @@index([authorId], name: "authorId")
+model UserRole {
+  id   Int    @id @default(autoincrement())
+  name String @unique @db.VarChar(100)
+  user user[]
+}
+
+model UserToEvent {
+  id      Int   @id @default(autoincrement())
+  eventId Int
+  userId  Int
+  event   event @relation(fields: [eventId], references: [id])
+  user    user  @relation(fields: [userId], references: [id])
+}
+
+model favorite {
+  id      Int   @id @default(autoincrement())
+  event   event @relation(fields: [eventId], references: [id])
+  user    user  @relation(fields: [userId], references: [id])
+  eventId Int
+  userId  Int
+}
+
+model eventType {
+  id      Int   @id @default(autoincrement())
+  event   event @relation(fields: [eventId], references: [id])
+  tag     tag   @relation(fields: [tagId], references: [id])
+  eventId Int
+  tagId   Int
 }
 
 model tag {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique @db.VarChar(50)
-  notes     note[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id        Int         @id @default(autoincrement())
+  name      String      @db.VarChar(255)
+  eventType eventType[]
 }
 
-model sessions {
-  session_id String   @id @db.VarChar(128)
-  expires    Int      @db.UnsignedInt
-  data       String?  @db.MediumText
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
+model currentSkills {
+  id      Int   @id @default(autoincrement())
+  skillId Int
+  skill   skill @relation(fields: [skillId], references: [id])
+  userId  Int
+  user    user  @relation(fields: [userId], references: [id])
+  level   Int
 }
 
-model activity {
-  id                     Int                     @id @default(autoincrement())
-  name                   String                  @db.VarChar(255)
-  createdAt              DateTime                @default(now())
-  updatedAt              DateTime                @default(now())
-  activityParticipations activityParticipation[]
-  nextGroupMeetingTime   DateTime?
+model skill {
+  id              Int               @id @default(autoincrement())
+  name            String            @db.VarChar(255)
+  currentSkills   currentSkills[]
+  skillsToacquire skillsToacquire[]
 }
 
-enum ActivityCompletionStatus {
-  done
-  stuck
-  inProgress
-  helping
+model skillsToacquire {
+  id      Int   @id @default(autoincrement())
+  skillId Int
+  skill   skill @relation(fields: [skillId], references: [id])
+  userId  Int
+  user    user  @relation(fields: [userId], references: [id])
 }
 
-model activityParticipation {
-  user             user                     @relation(fields: [userId], references: [id])
-  userId           Int
-  activity         activity                 @relation(fields: [activityId], references: [id])
-  activityId       Int
-  completionStatus ActivityCompletionStatus @default(inProgress)
-  energyLevel      Int?
-  connected        Boolean                  @default(true)
-
-  @@id([userId, activityId])
+model friend {
+  id            Int  @id @default(autoincrement())
+  currentUserId Int
+  currentUser   user @relation("currentUser", fields: [currentUserId], references: [id])
+  friendId      Int
+  friend        user @relation("friend", fields: [friendId], references: [id])
 }
