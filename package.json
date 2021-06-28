@@ -15,8 +15,7 @@
     "migrate:test": "dotenv -- cross-var \"DATABASE_URL=%DATABASE_URL_TEST% npx prisma migrate deploy\"",
     "test": "NODE_ENV=test npm-run-all migrate:test test:run",
     "test:run": "jest --testRunner='jest-circus/runner' --maxWorkers=1 --detectOpenHandles --forceExit",
-    "test:watch": "jest --testRunner='jest-circus/runner' --maxWorkers=1 --watch --detectOpenHandles --forceExit",
-    "wait-for-db": "node ./scripts/wait-for-db.js"
+    "test:watch": "jest --testRunner='jest-circus/runner' --maxWorkers=1 --watch --detectOpenHandles --forceExit"
   },
   "repository": {
     "type": "git",

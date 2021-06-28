@@ -34,7 +34,7 @@ services:
       - DATABASE_URL=mysql://root:root@db:3306/klassmate_api_database
     ports:
       - '5000:5000'
-    command: 'bash -c "npm i && npm run wait-for-db && npm run dev"'
+    command: 'bash -c "npm i && npm run dev"'
 
 volumes:
   klassmate-db:
