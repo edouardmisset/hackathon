@@ -17,6 +17,7 @@ const PORT = getEnv(`PORT${inTestEnv ? '_TEST' : ''}`);
 const DATABASE_URL = getEnv(`DATABASE_URL`);
 
 const dbUrlregex =
+  // eslint-disable-next-line no-useless-escape
   /^(?:([^:\/?#\s]+):\/{2})?(?:([^@\/?#\s]+)@)?([^\/?#\s]+)?(?:\/([^?#\s]*))?(?:[?]([^#\s]+))?\S*$/;
 
 const DB_USER = DATABASE_URL.match(dbUrlregex)[2].split(':')[0];
@@ -26,6 +27,9 @@ const DB_PORT = DATABASE_URL.match(dbUrlregex)[3].split(':')[1];
 const DB_NAME = DATABASE_URL.match(dbUrlregex)[4].split('/')[0];
 
 const CORS_ALLOWED_ORIGINS = getEnv(`CORS_ALLOWED_ORIGINS`);
+const SESSION_COOKIE_DOMAIN = getEnv(`SESSION_COOKIE_DOMAIN`);
+const SESSION_COOKIE_NAME = getEnv(`SESSION_COOKIE_NAME`);
+const SESSION_COOKIE_SECRET = getEnv(`SESSION_COOKIE_SECRET`);
 
 const API_BASE_URL = getEnv(`API_BASE_URL`);
 
@@ -36,7 +40,9 @@ module.exports = {
   inDevEnv,
   PORT,
   CORS_ALLOWED_ORIGINS,
-
+  SESSION_COOKIE_DOMAIN,
+  SESSION_COOKIE_NAME,
+  SESSION_COOKIE_SECRET,
   DATABASE_URL,
   DB_HOST,
   DB_USER,
