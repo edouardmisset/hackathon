@@ -5,9 +5,11 @@ const findAll = () => db.event.findMany();
 const findMany = (date) =>
   db.event.findMany({
     where: {
-      date_gte : date,
+      date: {
+        gte: date,
+      },
     },
-    orderBy: { date },
+    orderBy: { date: 'asc' },
   });
 
 const create = ({
