@@ -15,6 +15,20 @@ eventsRouter.get(
   })
 );
 
+// eventsRouter.get(
+//   '/upcoming',
+//   asyncHandler(async (req, res) => {
+//     // const { titleOrContentContains, authorId } = req.query;
+//     try {
+//       const upcoming = await Event.findMany(new Date());
+//       res.send(upcoming);
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).send(error);
+//     }
+//   })
+// );
+
 eventsRouter.get(
   '/:id',
   asyncHandler(async (req, res) => {
