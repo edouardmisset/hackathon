@@ -5,8 +5,6 @@ const db = require('../db');
 
 module.exports = async function seed() {
   try {
-    // const hashPassword = await user.hashPassword('hello');
-
     await user.create({
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),
@@ -27,17 +25,12 @@ module.exports = async function seed() {
     });
   } catch (error) {
     console.error(error);
+    process.exit(1);
+  } finally {
+    await db.$disconnect();
   }
 };
-module
-  .exports()
-  .catch((e) => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await db.$disconnect();
-  });
+module.exports();
 
 // npx prisma migrate dev
 // npx prisma db seed --preview-feature
