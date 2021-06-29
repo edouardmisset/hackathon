@@ -24,10 +24,10 @@ const hashPassword = (plainPassword) =>
 const verifyPassword = (plainPassword, hashedPassword) =>
   argon2.verify(hashedPassword, plainPassword, hashingOptions);
 
-const create = async ({ email, password, firstName, lastName }) => {
+const create = async ({ email, password, firstName, lastName, avatar }) => {
   const hashedPassword = await hashPassword(password);
   return db.user.create({
-    data: { email, hashedPassword, firstName, lastName },
+    data: { email, hashedPassword, firstName, lastName, avatar },
   });
 };
 
@@ -36,10 +36,10 @@ const update = async (id, data) =>
     where: { id: parseInt(id, 10) },
     data: {
       ...data,
-      avatarUrl:
-        typeof data.avatarUrl === 'string'
-          ? data.avatarUrl.replace(`${API_BASE_URL}/`, '')
-          : data.avatarUrl,
+      avatar:
+        typeof data.avatar === 'string'
+          ? data.avatar.replace(`${API_BASE_URL}/`, '')
+          : data.avatar,
     },
   });
 
@@ -59,23 +59,23 @@ const validate = (data, forUpdate = false) =>
     lastName: Joi.string()
       .max(255)
       .presence(forUpdate ? 'optional' : 'required'),
-    avatarUrl: Joi.string().max(255).allow(null, ''),
-    meetUrl: Joi.string().max(255).allow(null, ''),
-    discordId: Joi.string().max(255).allow(null, ''),
+    avatar: Joi.string()
+      .max(255).allow(null, '')
+      .optional(),
   }).validate(data, { abortEarly: false }).error;
 
 const getSafeAttributes = (user) => {
-  let { avatarUrl } = user;
+  let { avatar } = user;
   if (
-    avatarUrl &&
-    !avatarUrl.startsWith('http://') &&
-    !avatarUrl.startsWith('https://')
+    avatar &&
+    !avatar.startsWith('http://') &&
+    !avatar.startsWith('https://')
   ) {
-    avatarUrl = `${API_BASE_URL}/${avatarUrl}`;
+    avatar = `${API_BASE_URL}/${avatar}`;
   }
   return {
     ...user,
-    avatarUrl,
+    avatar,
     hashedPassword: undefined,
     resetPasswordToken: undefined,
   };
