@@ -35,7 +35,7 @@ const findByUser = (userId) =>
   db.user
     .findUnique({
       where: {
-        id: userId,
+        id: parseInt(userId, 10),
       },
       include: {
         events: true,
