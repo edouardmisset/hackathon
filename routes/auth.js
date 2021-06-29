@@ -6,21 +6,22 @@ const { SESSION_COOKIE_DOMAIN, SESSION_COOKIE_NAME } = require('../env');
 authRouter.post(
   '/login',
   asyncHandler(async (req, res) => {
-    const user = await User.findByEmail(req.body.email);
+    const { email, password, stayConnected } = req.body;
+    const user = await User.findByEmail(email);
     if (
-      user &&
-      (await User.verifyPassword(req.body.password, user.hashedPassword))
+      await User.verifyPassword(password, user.hashedPassword)
     ) {
-      if (req.body.stayConnected) {
-        // session cookie will be valid for a week
-        req.session.cookie.maxAge = 7 * 24 * 60 * 60 * 1000;
+      if (stayConnected) {
+        // --------- session cookie will be valid for a day --------- //
+        req.session.cookie.maxAge = 24 * 60 * 60 * 1000;
       }
+      console.log(req.session)
       req.session.userId = user.id;
       req.session.save(() => {
         res.sendStatus(200);
       });
     } else {
-      res.status(401).send('Invalid Credentials');
+      res.status(401).send('Informations non valides');
     }
   })
 );
