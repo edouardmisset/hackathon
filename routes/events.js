@@ -27,6 +27,19 @@ eventsRouter.get(
   })
 );
 
+eventsRouter.get(
+  '/tags',
+  asyncHandler(async (req, res) => {
+    try {
+      const tags = await Event.findTags();
+      res.send(tags);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send(error);
+    }
+  })
+);
+
 eventsRouter.post(
   '/search/',
   asyncHandler(async (req, res) => {
@@ -61,7 +74,6 @@ eventsRouter.post(
   '/',
   asyncHandler(async (req, res) => {
     const {
-      eventType,
       ownerId,
       location,
       image,
@@ -73,7 +85,6 @@ eventsRouter.post(
     } = req.body;
     try {
       const newEvent = await Event.create({
-        eventType,
         ownerId,
         location,
         image,
@@ -108,20 +119,11 @@ eventsRouter.delete(
 eventsRouter.post(
   '/:id',
   asyncHandler(async (req, res) => {
-    const {
-      eventType,
-      location,
-      image,
-      duration,
-      name,
-      date,
-      description,
-      online,
-    } = req.body;
-    const ownerId = 1
+    const { location, image, duration, name, date, description, online, tag } =
+      req.body;
+    const ownerId = 1;
     try {
       const newEvent = await Event.createEvent({
-        eventType,
         ownerId,
         location,
         image,
@@ -131,6 +133,7 @@ eventsRouter.post(
         description,
         online,
       });
+      await Event.linkTags({ eventId: newEvent.id, tagId: parseInt(tag, 10) });
       res.status(200).send(newEvent);
     } catch (error) {
       console.error(error);
