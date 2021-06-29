@@ -19,7 +19,7 @@ model user {
   skillsToAcquire skillsToAcquire[]
   currentUser     friend[]                @relation("currentUser")
   friend          friend[]                @relation("friend")
-  event           event[]
+  events           event[]
 }
 
 model event {

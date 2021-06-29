@@ -7,6 +7,7 @@ const expressAsyncHandler = require('express-async-handler');
 const requireCurrentUser = require('../middlewares/requireCurrentUser');
 const handleImageUpload = require('../middlewares/handleImageUpload');
 const User = require('../models/user');
+const Event = require('../models/event');
 const { ValidationError, RecordNotFoundError } = require('../error-types');
 const tryDeleteFile = require('../helpers/tryDeleteFile');
 
@@ -15,6 +16,20 @@ usersRouter.get(
   requireCurrentUser,
   expressAsyncHandler(async (req, res) => {
     res.send((await User.findMany()).map(User.getSafeAttributes));
+  })
+);
+
+usersRouter.get(
+  '/:id/events',
+  requireCurrentUser,
+  expressAsyncHandler(async (req, res) => {
+    try {
+      const events = await Event.findByUser(parseInt(req.params.id, 10));
+      res.send(events);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send(error);
+    }
   })
 );
 
@@ -28,9 +43,6 @@ usersRouter.post(
     return res.status(201).send(User.getSafeAttributes(newUser));
   })
 );
-
-
-
 
 usersRouter.post(
   '/reset-password',

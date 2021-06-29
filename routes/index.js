@@ -11,7 +11,7 @@ module.exports = (app) => {
   app.use('/events', eventsRouter);
   app.use('/events/:id', eventsRouter);
   app.use('/currentUser', currentUserRouter);
-  app.use('/user', usersRouter);
+  app.use('/users', usersRouter);
   app.use('/auth', authRouter);
   app.use('/new-event', newEventRouter);
   app.use('/profiles', profileRouter);
