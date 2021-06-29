@@ -12,7 +12,6 @@ const findMany = (date, eventType) =>
   });
 
 const create = ({
-  eventType,
   ownerId,
   name,
   location,
@@ -24,7 +23,6 @@ const create = ({
 }) =>
   db.event.create({
     data: {
-      eventType,
       ownerId,
       name,
       location,
@@ -36,9 +34,35 @@ const create = ({
     },
   });
 
+const createMany = ({
+  numberOfEvents,
+  ownerId,
+  name,
+  location,
+  image,
+  duration,
+  date,
+  description,
+  online,
+}) =>
+  db.event.createMany({
+    data: Array(numberOfEvents)
+      .fill(null)
+      .map(() => ({
+        ownerId,
+        name,
+        location,
+        image,
+        duration,
+        date,
+        description,
+        online,
+      })),
+  });
+
 const findUnique = (id) =>
   db.event.findUnique({ where: { id: parseInt(id, 10) } });
 
 const destroy = (id) => db.event.delete({ where: { id: parseInt(id, 10) } });
 
-module.exports = { findMany, create, findAll, findUnique, destroy };
+module.exports = { findMany, create, createMany, findAll, findUnique, destroy };
