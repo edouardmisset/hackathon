@@ -13,9 +13,10 @@ model user {
   lastName        String                  @db.VarChar(255)
   email           String                  @unique @db.VarChar(255)
   hashedPassword  String                  @db.VarChar(255)
+  avatar          String?                 @db.VarChar(255)
   UserToEvent     userRegisteredToEvent[]
   currentSkills   currentSkills[]
-  skillsToacquire skillsToacquire[]
+  skillsToAcquire skillsToAcquire[]
   currentUser     friend[]                @relation("currentUser")
   friend          friend[]                @relation("friend")
   event           event[]
@@ -59,27 +60,18 @@ model tag {
 }
 
 model currentSkills {
-  id      Int   @id @default(autoincrement())
-  skillId Int
-  skill   skill @relation(fields: [skillId], references: [id])
-  userId  Int
-  user    user  @relation(fields: [userId], references: [id])
-  level   Int
+  id     Int    @id @default(autoincrement())
+  name   String @db.VarChar(255)
+  userId Int
+  user   user   @relation(fields: [userId], references: [id])
+  level  Int
 }
 
-model skill {
-  id              Int               @id @default(autoincrement())
-  name            String            @db.VarChar(255)
-  currentSkills   currentSkills[]
-  skillsToacquire skillsToacquire[]
-}
-
-model skillsToacquire {
-  id      Int   @id @default(autoincrement())
-  skillId Int
-  skill   skill @relation(fields: [skillId], references: [id])
-  userId  Int
-  user    user  @relation(fields: [userId], references: [id])
+model skillsToAcquire {
+  id     Int    @id @default(autoincrement())
+  name   String @db.VarChar(255)
+  userId Int
+  user   user   @relation(fields: [userId], references: [id])
 }
 
 model friend {

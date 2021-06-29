@@ -9,7 +9,6 @@ const handleImageUpload = require('../middlewares/handleImageUpload');
 const User = require('../models/user');
 const { ValidationError, RecordNotFoundError } = require('../error-types');
 const tryDeleteFile = require('../helpers/tryDeleteFile');
-const { sendResetPasswordEmail } = require('../emailer');
 
 usersRouter.get(
   '/',

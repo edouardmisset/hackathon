@@ -4,10 +4,15 @@ VALUES('Web Design'), ('Word Press'), ('Logo Design'), ('Drop Shipping'), ('Grap
 
 
 INSERT INTO `night-fiverr`.`user`
-(firstName, lastName, email, hashedPassword)
-VALUES('John', 'Doe', 'john.doe@gmail.com', 'azerty');
+(firstName, lastName, email, avatar, hashedPassword)
+VALUES('John', 'Doe', 'john.doe@gmail.com', '', 'azerty');
 
 
 INSERT INTO `night-fiverr`.event
 (name, description, online, `date`, duration, image, location, ownerId)
-VALUES('First Event', 'blablabla   dgfdgdfg fgfghfhf gdgddsfsdf', 0, CURRENT_TIMESTAMP(3), 30, 'image.jpg', '17 rue Delandine, 69002 Lyon', 1),('Second Event', 'blablabdfdfdffgla   dggfgdfgfgfggffdgdfg fgfghfhf ggfgfdgfgfggfdgfgdfgdgddsfsdf', 1, CURRENT_TIMESTAMP(3), 30, 'image2.jpg', 'zoomzoom', 1);
+VALUES('First Event', 'blablabla   dgfdgdfg fgfghfhf gdgddsfsdf', 0, CURRENT_TIMESTAMP(3), 30, '', '17 rue Delandine, 69002 Lyon', 1),('Second Event', 'blablabdfdfdffgla   dggfgdfgfgfggffdgdfg fgfghfhf ggfgfdgfgfggfdgfgdfgdgddsfsdf', 1, CURRENT_TIMESTAMP(3), 30, '', 'zoomzoom', 1);
+
+
+INSERT INTO `night-fiverr`.currentskills
+(name, userId, `level`)
+VALUES('JavaScript', 1, 2), ('CSS', 1, 5), ('PHP', 1, 3);
