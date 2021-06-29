@@ -1,6 +1,6 @@
 const faker = require('faker');
 const user = require('../models/user');
-const event = require('../models/event');
+// const event = require('../models/event');
 const db = require('../db');
 
 module.exports = async function seed() {
@@ -12,16 +12,19 @@ module.exports = async function seed() {
       password: 'hello',
     });
 
-    await event.createMany({
-      numberOfEvents: 10,
-      name: faker.name.firstName(),
-      description: faker.name.jobDescriptor(),
-      online: faker.datatype.boolean(),
-      date: faker.datatype.datetime(),
-      duration: faker.datatype.number(),
-      image: faker.image.image(),
-      location: faker.address.city(),
-      ownerId: 1,
+    await db.event.createMany({
+      data: Array(10)
+        .fill(null)
+        .map(() => ({
+          name: faker.name.firstName(),
+          description: faker.name.jobDescriptor(),
+          online: faker.datatype.boolean(),
+          date: faker.datatype.datetime(),
+          duration: faker.datatype.number(),
+          image: faker.image.image(),
+          location: faker.address.city(),
+          ownerId: 1,
+        })),
     });
   } catch (error) {
     console.error(error);
