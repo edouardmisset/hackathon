@@ -5,9 +5,35 @@ const Event = require('../models/event');
 eventsRouter.get(
   '/',
   asyncHandler(async (req, res) => {
-    // const { titleOrContentContains, authorId } = req.query;
     try {
       res.send(await Event.findAll());
+    } catch (error) {
+      console.error(error);
+      res.status(500).send(error);
+    }
+  })
+);
+
+eventsRouter.get(
+  '/upcoming',
+  asyncHandler(async (req, res) => {
+    try {
+      const upcoming = await Event.findByDate(new Date());
+      res.send(upcoming);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send(error);
+    }
+  })
+);
+
+eventsRouter.post(
+  '/search/',
+  asyncHandler(async (req, res) => {
+    const { value } = req.body;
+    try {
+      const searchedEvents = await Event.findByQuery(value);
+      res.send(searchedEvents);
     } catch (error) {
       console.error(error);
       res.status(500).send(error);
