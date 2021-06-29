@@ -35,6 +35,7 @@ const findUnique = (id) =>
   db.event.findUnique({ where: { id: parseInt(id, 10) } });
 
 const destroy = (id) => db.event.delete({ where: { id: parseInt(id, 10) } });
+
 const linkTags = ({ eventId, tagId }) =>
   db.eventType.create({
     data: {
@@ -50,12 +51,43 @@ const linkCurrentSkills = ({ eventId, chosenSkills }) =>
       skillId: parseInt(skill, 10),
     })),
   });
+
 const linkSkillsToAcquire = ({ eventId, chosenNewSkills }) =>
   db.skillsToAcquireToEvent.createMany({
     data: chosenNewSkills.map((skill) => ({
       eventId,
       skillId: parseInt(skill, 10),
     })),
+  });
+
+const eventSkillsToAcquire = (eventId) =>
+  db.skillsToAcquireToEvent.findMany({
+    where: {
+      eventId,
+    },
+    include: {
+      skill: true,
+    },
+  });
+
+const eventCurrentSkills = (eventId) =>
+  db.currentSkillsToEvent.findMany({
+    where: {
+      eventId,
+    },
+    include: {
+      skill: true,
+    },
+  });
+
+const eventTags = (eventId) =>
+  db.eventType.findMany({
+    where: {
+      eventId,
+    },
+    include: {
+      tag: true,
+    },
   });
 
 const createEvent = ({
@@ -94,4 +126,7 @@ module.exports = {
   linkTags,
   linkCurrentSkills,
   linkSkillsToAcquire,
+  eventSkillsToAcquire,
+  eventCurrentSkills,
+  eventTags,
 };

@@ -16,12 +16,26 @@ eventsRouter.get(
   })
 );
 
+const getAdditionalData = async (eventId) => {
+  const eventCurrentSkills = await Event.eventCurrentSkills(eventId);
+  const eventSkillsToAcquire = await Event.eventSkillsToAcquire(eventId);
+  const eventTags = await Event.eventTags(eventId);
+  return { eventCurrentSkills, eventSkillsToAcquire, eventTags };
+};
+
 eventsRouter.get(
   '/upcoming',
   asyncHandler(async (req, res) => {
     try {
       const upcoming = await Event.findByDate(new Date());
-      res.send(upcoming);
+      const updatedUpcoming = await Promise.all(
+        upcoming.map(async (e) => {
+          const additionalData = await getAdditionalData(e.id);
+          const updatedData = { ...e, ...additionalData };
+          return updatedData;
+        })
+      );
+      res.send(updatedUpcoming);
     } catch (error) {
       console.error(error);
       res.status(500).send(error);
@@ -52,7 +66,14 @@ eventsRouter.get(
         },
         take: 10,
       });
-      res.send(popular);
+      const updatedPopular = await Promise.all(
+        popular.map(async (e) => {
+          const additionalData = await getAdditionalData(e.id);
+          const updatedData = { ...e, ...additionalData };
+          return updatedData;
+        })
+      );
+      res.send(updatedPopular);
     } catch (error) {
       console.error(error);
       res.status(500).send(error);
