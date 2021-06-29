@@ -18,8 +18,22 @@ eventsRouter.get(
   '/upcoming',
   asyncHandler(async (req, res) => {
     try {
-      const upcoming = await Event.findMany(new Date());
+      const upcoming = await Event.findByDate(new Date());
       res.send(upcoming);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send(error);
+    }
+  })
+);
+
+eventsRouter.post(
+  '/search/',
+  asyncHandler(async (req, res) => {
+    const { value } = req.body;
+    try {
+      const searchedEvents = await Event.findByQuery(value);
+      res.send(searchedEvents);
     } catch (error) {
       console.error(error);
       res.status(500).send(error);

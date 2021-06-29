@@ -2,7 +2,7 @@ const db = require('../db');
 
 const findAll = () => db.event.findMany();
 
-const findMany = (date) =>
+const findByDate = (date) =>
   db.event.findMany({
     where: {
       date: {
@@ -10,6 +10,24 @@ const findMany = (date) =>
       },
     },
     orderBy: { date: 'asc' },
+  });
+
+const findByQuery = (query) =>
+  db.event.findMany({
+    where: {
+      OR: [
+        {
+          name: {
+            contains: query,
+          },
+        },
+        {
+          description: {
+            contains: query,
+          },
+        },
+      ],
+    },
   });
 
 const create = ({
@@ -40,4 +58,11 @@ const findUnique = (id) =>
 
 const destroy = (id) => db.event.delete({ where: { id: parseInt(id, 10) } });
 
-module.exports = { findMany, create, findAll, findUnique, destroy };
+module.exports = {
+  findByQuery,
+  findByDate,
+  create,
+  findAll,
+  findUnique,
+  destroy,
+};
