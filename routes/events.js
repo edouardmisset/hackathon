@@ -5,9 +5,21 @@ const Event = require('../models/event');
 eventsRouter.get(
   '/',
   asyncHandler(async (req, res) => {
-    // const { titleOrContentContains, authorId } = req.query;
     try {
       res.send(await Event.findAll());
+    } catch (error) {
+      console.error(error);
+      res.status(500).send(error);
+    }
+  })
+);
+
+eventsRouter.get(
+  '/upcoming',
+  asyncHandler(async (req, res) => {
+    try {
+      const upcoming = await Event.findMany(new Date());
+      res.send(upcoming);
     } catch (error) {
       console.error(error);
       res.status(500).send(error);

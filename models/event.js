@@ -2,13 +2,14 @@ const db = require('../db');
 
 const findAll = () => db.event.findMany();
 
-const findMany = (date, eventType) =>
+const findMany = (date) =>
   db.event.findMany({
     where: {
-      date,
-      eventType,
+      date: {
+        gte: date,
+      },
     },
-    orderBy: { date },
+    orderBy: { date: 'asc' },
   });
 
 const create = ({
