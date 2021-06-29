@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const eventsRouter = require('express').Router();
 const asyncHandler = require('express-async-handler');
 const Event = require('../models/event');
