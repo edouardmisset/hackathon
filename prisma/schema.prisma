@@ -23,18 +23,21 @@ model user {
 }
 
 model event {
-  id          Int                     @id @default(autoincrement())
-  name        String                  @db.VarChar(255)
-  description String                  @db.Text
-  online      Boolean
-  date        DateTime                @default(now())
-  duration    Int
-  image       String?                 @db.VarChar(255)
-  location    String                  @db.VarChar(255)
-  UserToEvent userRegisteredToEvent[]
-  eventType   eventType[]
-  ownerId     Int
-  owner       user                    @relation(fields: [ownerId], references: [id])
+  id                     Int                      @id @default(autoincrement())
+  name                   String                   @db.VarChar(255)
+  description            String                   @db.Text
+  online                 Boolean
+  date                   DateTime                 @default(now())
+  duration               Int
+  popularity             Int
+  image                  String?                  @db.VarChar(255)
+  location               String                   @db.VarChar(255)
+  UserToEvent            userRegisteredToEvent[]
+  eventType              eventType[]
+  ownerId                Int
+  owner                  user                     @relation(fields: [ownerId], references: [id])
+  currentSkillsToEvent   currentSkillsToEvent[]
+  SkillsToAcquireToEvent SkillsToAcquireToEvent[]
 }
 
 model userRegisteredToEvent {
@@ -60,18 +63,20 @@ model tag {
 }
 
 model currentSkills {
-  id     Int    @id @default(autoincrement())
-  name   String @db.VarChar(255)
-  userId Int
-  user   user   @relation(fields: [userId], references: [id])
-  level  Int
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @db.VarChar(255)
+  userId               Int
+  user                 user                   @relation(fields: [userId], references: [id])
+  level                Int
+  currentSkillsToEvent currentSkillsToEvent[]
 }
 
 model skillsToAcquire {
-  id     Int    @id @default(autoincrement())
-  name   String @db.VarChar(255)
-  userId Int
-  user   user   @relation(fields: [userId], references: [id])
+  id                     Int                      @id @default(autoincrement())
+  name                   String                   @db.VarChar(255)
+  userId                 Int
+  user                   user                     @relation(fields: [userId], references: [id])
+  SkillsToAcquireToEvent SkillsToAcquireToEvent[]
 }
 
 model friend {
@@ -80,4 +85,20 @@ model friend {
   currentUser   user @relation("currentUser", fields: [currentUserId], references: [id])
   friendId      Int
   friend        user @relation("friend", fields: [friendId], references: [id])
+}
+
+model currentSkillsToEvent {
+  id      Int           @id @default(autoincrement())
+  event   event         @relation(fields: [eventId], references: [id])
+  skill   currentSkills @relation(fields: [skillId], references: [id])
+  eventId Int
+  skillId Int
+}
+
+model SkillsToAcquireToEvent {
+  id      Int             @id @default(autoincrement())
+  event   event           @relation(fields: [eventId], references: [id])
+  skill   skillsToAcquire @relation(fields: [skillId], references: [id])
+  eventId Int
+  skillId Int
 }

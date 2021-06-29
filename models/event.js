@@ -1,6 +1,7 @@
 const db = require('../db');
 
 const findAll = () => db.event.findMany();
+const findTags = () => db.tag.findMany();
 
 const findByDate = (date) =>
   db.event.findMany({
@@ -12,25 +13,52 @@ const findByDate = (date) =>
     orderBy: { date: 'asc' },
   });
 
-const findByQuery = (query) =>
+const findByQuery = (searchValue) =>
   db.event.findMany({
     where: {
       OR: [
         {
           name: {
-            contains: query,
+            contains: searchValue,
           },
         },
         {
           description: {
-            contains: query,
+            contains: searchValue,
           },
         },
       ],
     },
   });
 
-const create = ({
+const findUnique = (id) =>
+  db.event.findUnique({ where: { id: parseInt(id, 10) } });
+
+const destroy = (id) => db.event.delete({ where: { id: parseInt(id, 10) } });
+const linkTags = ({ eventId, tagId }) =>
+  db.eventType.create({
+    data: {
+      eventId,
+      tagId,
+    },
+  });
+
+const linkCurrentSkills = ({ eventId, chosenSkills }) =>
+  db.currentSkillsToEvent.createMany({
+    data: chosenSkills.map((skill) => ({
+      eventId,
+      skillId: parseInt(skill, 10),
+    })),
+  });
+const linkSkillsToAcquire = ({ eventId, chosenNewSkills }) =>
+  db.skillsToAcquireToEvent.createMany({
+    data: chosenNewSkills.map((skill) => ({
+      eventId,
+      skillId: parseInt(skill, 10),
+    })),
+  });
+
+const createEvent = ({
   ownerId,
   name,
   location,
@@ -39,10 +67,11 @@ const create = ({
   date,
   description,
   online,
+  popularity,
 }) =>
   db.event.create({
     data: {
-      ownerId,
+      owner: { connect: { id: ownerId } },
       name,
       location,
       image,
@@ -50,19 +79,19 @@ const create = ({
       date,
       description,
       online,
+      popularity,
     },
   });
-
-const findUnique = (id) =>
-  db.event.findUnique({ where: { id: parseInt(id, 10) } });
-
-const destroy = (id) => db.event.delete({ where: { id: parseInt(id, 10) } });
 
 module.exports = {
   findByQuery,
   findByDate,
-  create,
   findAll,
   findUnique,
   destroy,
+  createEvent,
+  findTags,
+  linkTags,
+  linkCurrentSkills,
+  linkSkillsToAcquire,
 };
