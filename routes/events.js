@@ -7,9 +7,7 @@ eventsRouter.get(
   asyncHandler(async (req, res) => {
     // const { titleOrContentContains, authorId } = req.query;
     try {
-      const events = await Event.findAll();
-      if (!events.length) res.status(200).send('No event found');
-      else res.send(events);
+      res.send(await Event.findAll());
     } catch (error) {
       console.error(error);
       res.status(500).send(error);
