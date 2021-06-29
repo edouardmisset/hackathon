@@ -1,6 +1,7 @@
 const eventsRouter = require('express').Router();
 const asyncHandler = require('express-async-handler');
 const Event = require('../models/event');
+const db = require('../db');
 
 eventsRouter.get(
   '/',
@@ -33,6 +34,24 @@ eventsRouter.get(
     try {
       const tags = await Event.findTags();
       res.send(tags);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send(error);
+    }
+  })
+);
+
+eventsRouter.get(
+  '/popular',
+  asyncHandler(async (req, res) => {
+    try {
+      const popular = await db.event.findMany({
+        orderBy: {
+          popularity: 'desc',
+        },
+        take: 10,
+      });
+      res.send(popular);
     } catch (error) {
       console.error(error);
       res.status(500).send(error);

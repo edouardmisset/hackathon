@@ -23,6 +23,7 @@ module.exports = async function seed() {
           duration: faker.datatype.number(),
           image: faker.image.image(),
           location: faker.address.city(),
+          popularity: parseInt(Math.random() * 1000, 10),
           ownerId: 1,
         })),
     });
