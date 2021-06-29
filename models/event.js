@@ -31,6 +31,18 @@ const findByQuery = (searchValue) =>
     },
   });
 
+const findByUser = (userId) =>
+  db.user
+    .findUnique({
+      where: {
+        id: parseInt(userId, 10),
+      },
+      include: {
+        events: true,
+      },
+    })
+    .then(({ events }) => events);
+
 const findUnique = (id) =>
   db.event.findUnique({ where: { id: parseInt(id, 10) } });
 
@@ -129,4 +141,5 @@ module.exports = {
   eventSkillsToAcquire,
   eventCurrentSkills,
   eventTags,
+  findByUser,
 };
