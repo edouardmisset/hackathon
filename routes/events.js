@@ -2,6 +2,7 @@ const eventsRouter = require('express').Router();
 const asyncHandler = require('express-async-handler');
 const Event = require('../models/event');
 const db = require('../db');
+const requireCurrentUser = require('../middlewares/requireCurrentUser');
 
 eventsRouter.get(
   '/',
@@ -105,9 +106,11 @@ eventsRouter.delete(
 
 eventsRouter.post(
   '/',
+  requireCurrentUser,
   asyncHandler(async (req, res) => {
+    const { id } = req.currentUser;
+
     const {
-      ownerId,
       location,
       image,
       duration,
@@ -120,10 +123,10 @@ eventsRouter.post(
       chosenSkills,
       chosenNewSkills,
     } = req.body;
-    console.log('req.body    ', req.body);
+
     try {
       const newEvent = await Event.createEvent({
-        ownerId,
+        ownerId: id,
         location,
         image,
         name,
