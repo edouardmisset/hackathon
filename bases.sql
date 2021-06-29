@@ -9,11 +9,10 @@ VALUES('Web Design'), ('Word Press'), ('Logo Design'), ('Drop Shipping'), ('Grap
 
 
 
-
 INSERT INTO `night-fiverr`.event
-(name, description, online, `date`, duration, image, location, ownerId)
-VALUES('First Event', 'blablabla   dgfdgdfg fgfghfhf gdgddsfsdf', 0, CURRENT_TIMESTAMP(3), 30, '', '17 rue Delandine, 69002 Lyon', 1),('Second Event', 'blablabdfdfdffgla   dggfgdfgfgfggffdgdfg fgfghfhf ggfgfdgfgfggfdgfgdfgdgddsfsdf', 1, CURRENT_TIMESTAMP(3), 30, '', 'zoomzoom', 1);
-
+(name, description, online, `date`, duration, popularity, image, location, ownerId)
+VALUES('First Event', 'blablabla   dgfdgdfg fgfghfhf gdgddsfsdf', 0, CURRENT_TIMESTAMP(3), 30, 0, '', '17 rue Delandine, 69002 Lyon', 1),
+('Second Event', 'blablabdfdfdffgla   dggfgdfgfgfggffdgdfg fgfghfhf ggfgfdgfgfggfdgfgdfgdgddsfsdf', 1, CURRENT_TIMESTAMP(3), 30, 0, '', 'zoomzoom', 1);
 
 INSERT INTO `night-fiverr`.currentskills
 (name, userId, `level`)

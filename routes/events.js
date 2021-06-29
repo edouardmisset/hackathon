@@ -89,38 +89,6 @@ eventsRouter.get(
   })
 );
 
-eventsRouter.post(
-  '/',
-  asyncHandler(async (req, res) => {
-    const {
-      ownerId,
-      location,
-      image,
-      duration,
-      name,
-      date,
-      description,
-      online,
-    } = req.body;
-    try {
-      const newEvent = await Event.create({
-        ownerId,
-        location,
-        image,
-        name,
-        duration,
-        date,
-        description,
-        online,
-      });
-      res.status(200).send(newEvent);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send(error);
-    }
-  })
-);
-
 eventsRouter.delete(
   '/:id',
   asyncHandler(async (req, res) => {
@@ -136,11 +104,23 @@ eventsRouter.delete(
 );
 
 eventsRouter.post(
-  '/:id',
+  '/',
   asyncHandler(async (req, res) => {
-    const { location, image, duration, name, date, description, online, tag } =
-      req.body;
-    const ownerId = 1;
+    const {
+      ownerId,
+      location,
+      image,
+      duration,
+      name,
+      date,
+      description,
+      online,
+      tag,
+      popularity,
+      chosenSkills,
+      chosenNewSkills,
+    } = req.body;
+    console.log('req.body    ', req.body);
     try {
       const newEvent = await Event.createEvent({
         ownerId,
@@ -151,8 +131,17 @@ eventsRouter.post(
         date: new Date(date),
         description,
         online,
+        popularity,
       });
       await Event.linkTags({ eventId: newEvent.id, tagId: parseInt(tag, 10) });
+      await Event.linkCurrentSkills({
+        eventId: newEvent.id,
+        chosenSkills,
+      });
+      await Event.linkSkillsToAcquire({
+        eventId: newEvent.id,
+        chosenNewSkills,
+      });
       res.status(200).send(newEvent);
     } catch (error) {
       console.error(error);

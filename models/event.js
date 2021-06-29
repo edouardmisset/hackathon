@@ -31,29 +31,6 @@ const findByQuery = (query) =>
     },
   });
 
-const create = ({
-  ownerId,
-  name,
-  location,
-  image,
-  duration,
-  date,
-  description,
-  online,
-}) =>
-  db.event.create({
-    data: {
-      ownerId,
-      name,
-      location,
-      image,
-      duration,
-      date,
-      description,
-      online,
-    },
-  });
-
 const findUnique = (id) =>
   db.event.findUnique({ where: { id: parseInt(id, 10) } });
 
@@ -66,46 +43,22 @@ const linkTags = ({ eventId, tagId }) =>
     },
   });
 
-const linkCurrentSkills = ({ eventId, skillId }) =>
-  db.currentSkillsToEvent.create({
-    data: {
+const linkCurrentSkills = ({ eventId, chosenSkills }) =>
+  db.currentSkillsToEvent.createMany({
+    data: chosenSkills.map((skill) => ({
       eventId,
-      skillId,
-    },
+      skillId: parseInt(skill, 10),
+    })),
   });
-
-const linkSkillsToAcquire = ({ eventId, skillId }) =>
-  db.skillsToAcquireToEvent.create({
-    data: {
+const linkSkillsToAcquire = ({ eventId, chosenNewSkills }) =>
+  db.skillsToAcquireToEvent.createMany({
+    data: chosenNewSkills.map((skill) => ({
       eventId,
-      skillId,
-    },
+      skillId: parseInt(skill, 10),
+    })),
   });
-
-// data: [
-//   { name: 'Bob', email: 'bob@prisma.io' },
-//   { name: 'Bobo', email: 'bob@prisma.io' }, // Duplicate unique key!
-//   { name: 'Yewande', email: 'yewande@prisma.io' },
-//   { name: 'Angelique', email: 'angelique@prisma.io' },
-// ],
-
-// await db.event.createMany({
-//   data: Array(10)
-//     .fill(null)
-//     .map(() => ({
-//       name: faker.name.firstName(),
-//       description: faker.name.jobDescriptor(),
-//       online: faker.datatype.boolean(),
-//       date: faker.datatype.datetime(),
-//       duration: faker.datatype.number(),
-//       image: faker.image.image(),
-//       location: faker.address.city(),
-//       ownerId: 1,
-//     })),
-// });
 
 const createEvent = ({
-  eventType,
   ownerId,
   name,
   location,
@@ -114,11 +67,11 @@ const createEvent = ({
   date,
   description,
   online,
+  popularity,
 }) =>
   db.event.create({
     data: {
-      eventType,
-      ownerId,
+      owner: { connect: { id: ownerId } },
       name,
       location,
       image,
@@ -126,13 +79,13 @@ const createEvent = ({
       date,
       description,
       online,
+      popularity,
     },
   });
 
 module.exports = {
   findByQuery,
   findByDate,
-  create,
   findAll,
   findUnique,
   destroy,
