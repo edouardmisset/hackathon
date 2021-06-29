@@ -3,7 +3,7 @@ const path = require('path');
 const _ = require('lodash');
 const usersRouter = require('express').Router();
 const expressAsyncHandler = require('express-async-handler');
-const uniqid = require('uniqid');
+
 const requireCurrentUser = require('../middlewares/requireCurrentUser');
 const handleImageUpload = require('../middlewares/handleImageUpload');
 const User = require('../models/user');
@@ -20,78 +20,17 @@ usersRouter.get(
 
 usersRouter.post(
   '/',
-  requireCurrentUser,
-  expressAsyncHandler(async (req, res, next) => {
-    if (req.currentUser.role === 'admin') next();
-    else res.sendStatus(403);
-  }),
   expressAsyncHandler(async (req, res) => {
     const validationErrors = User.validate(req.body);
     if (validationErrors)
       return res.status(422).send({ errors: validationErrors.details });
-
-    if (await User.emailAlreadyExists(req.body.email))
-      return res.status(422).send({ error: 'this email is already taken' });
-
     const newUser = await User.create(req.body);
     return res.status(201).send(User.getSafeAttributes(newUser));
   })
 );
 
-usersRouter.post(
-  '/invites',
-  requireCurrentUser,
-  expressAsyncHandler(async (req, res, next) => {
-    if (req.currentUser.role === 'admin') next();
-    else res.sendStatus(403);
-  }),
-  expressAsyncHandler(async (req, res) => {
-    const emails = req.body.emails || req.query.emails;
-    const invitePromises = emails.map(async (email) => {
-      try {
-        const token = uniqid();
-        const hashedToken = await User.hashPassword(token);
 
-        const user = await User.upsert({
-          where: { email },
-          create: {
-            email,
-            resetPasswordToken: hashedToken,
-            firstName: 'Guest',
-            lastName: 'Guest',
-            hashedPassword: hashedToken,
-          },
-          update: { resetPasswordToken: hashedToken },
-        });
-        await sendResetPasswordEmail({ id: user.id, email: user.email }, token);
-      } catch (err) {
-        console.error(err);
-      }
-    });
 
-    await Promise.all(invitePromises);
-    res.sendStatus(200);
-  })
-);
-
-usersRouter.post(
-  '/reset-password-email',
-  expressAsyncHandler(async (req, res) => {
-    // for security reasons, this route will always indicate success
-    res.sendStatus(200);
-    try {
-      const user = await User.findByEmail(req.body.email);
-      if (user) {
-        const token = uniqid();
-        await sendResetPasswordEmail(user, token);
-        const hashedToken = await User.hashPassword(token);
-        await User.update(user.id, { resetPasswordToken: hashedToken });
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  })
-);
 
 usersRouter.post(
   '/reset-password',
