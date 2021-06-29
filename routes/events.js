@@ -49,9 +49,9 @@ eventsRouter.get(
 eventsRouter.post(
   '/search/',
   asyncHandler(async (req, res) => {
-    const { value } = req.body;
+    const { searchValue } = req.body;
     try {
-      const searchedEvents = await Event.findByQuery(value);
+      const searchedEvents = await Event.findByQuery(searchValue);
       res.send(searchedEvents);
     } catch (error) {
       console.error(error);

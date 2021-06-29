@@ -12,18 +12,18 @@ const findByDate = (date) =>
     orderBy: { date: 'asc' },
   });
 
-const findByQuery = (query) =>
+const findByQuery = (searchValue) =>
   db.event.findMany({
     where: {
       OR: [
         {
           name: {
-            contains: query,
+            contains: searchValue,
           },
         },
         {
           description: {
-            contains: query,
+            contains: searchValue,
           },
         },
       ],
@@ -89,5 +89,5 @@ module.exports = {
   findAll,
   findUnique,
   destroy,
-  createEvent
+  createEvent,
 };
