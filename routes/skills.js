@@ -1,13 +1,17 @@
 const skillsRouter = require('express').Router();
 const asyncHandler = require('express-async-handler');
 const Skill = require('../models/skill');
+const requireCurrentUser = require('../middlewares/requireCurrentUser');
 
 // createCurrentSkill, createSkillToAcquire
 
 skillsRouter.post(
   '/current',
+  requireCurrentUser,
   asyncHandler(async (req, res) => {
-    const { newCurrentSkill, userId, chooseLevel } = req.body;
+    const { newCurrentSkill, chooseLevel } = req.body;
+    const { id } = req.currentUser;
+    const userId = id;
     try {
       const newEvent = await Skill.createCurrentSkill({
         name: newCurrentSkill,
@@ -24,6 +28,7 @@ skillsRouter.post(
 
 skillsRouter.post(
   '/currentchange',
+  requireCurrentUser,
   asyncHandler(async (req, res) => {
     const { id, level } = req.body;
     try {
@@ -41,8 +46,11 @@ skillsRouter.post(
 
 skillsRouter.post(
   '/new',
+  requireCurrentUser,
   asyncHandler(async (req, res) => {
-    const { newSkillToAcquire, userId } = req.body;
+    const { newSkillToAcquire } = req.body;
+    const { id } = req.currentUser;
+    const userId = id;
     try {
       const newEvent = await Skill.createSkillToAcquire({
         name: newSkillToAcquire,
