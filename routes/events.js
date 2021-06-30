@@ -61,6 +61,9 @@ eventsRouter.get(
   asyncHandler(async (req, res) => {
     try {
       const popular = await db.event.findMany({
+        include: {
+          owner: true,
+        },
         orderBy: {
           popularity: 'desc',
         },
@@ -103,7 +106,12 @@ eventsRouter.get(
       const event = await Event.findUnique(id);
       if (!Object.entries(event).length)
         res.status(200).send(`Event (${id}) not found`);
-      else res.send(event);
+      else {
+        const eventId = parseInt(id, 10);
+        const additionalData = await getAdditionalData(eventId);
+        const updatedData = { ...event, ...additionalData };
+        res.send(updatedData);
+      }
     } catch (error) {
       console.error(error);
       res.status(500).send(error);

@@ -1,6 +1,6 @@
 const db = require('../db');
 
-const findAll = () => db.event.findMany();
+const findAll = () => db.event.findMany({ include: { owner: true } });
 const findTags = () => db.tag.findMany();
 
 const findByDate = (date) =>
@@ -10,6 +10,7 @@ const findByDate = (date) =>
         gte: date,
       },
     },
+    include: { owner: true },
     orderBy: { date: 'asc' },
   });
 
@@ -44,7 +45,10 @@ const findByUser = (userId) =>
     .then(({ events }) => events);
 
 const findUnique = (id) =>
-  db.event.findUnique({ where: { id: parseInt(id, 10) } });
+  db.event.findUnique({
+    where: { id: parseInt(id, 10) },
+    include: { owner: true },
+  });
 
 const destroy = (id) => db.event.delete({ where: { id: parseInt(id, 10) } });
 
