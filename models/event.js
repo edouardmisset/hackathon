@@ -60,21 +60,35 @@ const linkTags = ({ eventId, tagId }) =>
     },
   });
 
-const linkCurrentSkills = ({ eventId, chosenSkills }) =>
-  db.currentSkillsToEvent.createMany({
-    data: chosenSkills.map((skill) => ({
-      eventId,
-      skillId: parseInt(skill, 10),
-    })),
-  });
+const linkCurrentSkills = ({ eventId, chosenSkills }) => {
+  const newChosenkills =
+    typeof chosenNewSkills === 'string'
+      ? Array(1).fill(chosenSkills)
+      : chosenSkills;
+  return newChosenkills.length > 0
+    ? db.currentSkillsToEvent.createMany({
+        data: newChosenkills.map((skill) => ({
+          eventId,
+          skillId: parseInt(skill, 10),
+        })),
+      })
+    : [];
+};
 
-const linkSkillsToAcquire = ({ eventId, chosenNewSkills }) =>
-  db.skillsToAcquireToEvent.createMany({
-    data: chosenNewSkills.map((skill) => ({
-      eventId,
-      skillId: parseInt(skill, 10),
-    })),
-  });
+const linkSkillsToAcquire = ({ eventId, chosenNewSkills }) => {
+  const newChosenNewSkills =
+    typeof chosenNewSkills === 'string'
+      ? Array(1).fill(chosenNewSkills)
+      : chosenNewSkills;
+  return newChosenNewSkills.length > 0
+    ? db.skillsToAcquireToEvent.createMany({
+        data: newChosenNewSkills.map((skill) => ({
+          eventId,
+          skillId: parseInt(skill, 10),
+        })),
+      })
+    : [];
+};
 
 const eventSkillsToAcquire = (eventId) =>
   db.skillsToAcquireToEvent.findMany({
