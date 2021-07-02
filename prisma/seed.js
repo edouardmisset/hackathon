@@ -15,7 +15,7 @@ const eventNameList = [
   'New Hype Event - SECRET',
 ];
 
-console.log('test');
+
 module.exports = async function seed() {
   await user.create({
     firstName: 'Franck',

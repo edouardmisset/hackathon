@@ -152,7 +152,7 @@ eventsRouter.post(
       chosenSkills = [],
       chosenNewSkills = [],
     } = req.body;
-    console.log(req.body);
+
     try {
       const newEvent = await Event.createEvent({
         ownerId: id,

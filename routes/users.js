@@ -25,7 +25,7 @@ usersRouter.get(
   expressAsyncHandler(async (req, res) => {
     try {
       const events = await Event.findByUser(parseInt(req.params.id, 10));
-      console.log(events);
+
       res.send(events);
     } catch (error) {
       console.error(error);
